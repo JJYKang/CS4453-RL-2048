@@ -8,12 +8,12 @@ Handles:
   - Syncing the target network
 """
 
+import numpy as np
 import torch
 import torch.nn as nn
 import torch.optim as optim
-import numpy as np
 
-from dqn.replay_buffer import ReplayBuffer
+from rl2048.dqn.replay_buffer import ReplayBuffer
 
 
 class DQNAgent:
@@ -69,7 +69,9 @@ class DQNAgent:
     # ------------------------------------------------------------------
     # Action selection
     # ------------------------------------------------------------------
-    def select_action(self, state: np.ndarray, valid_actions: list[int] | None = None) -> int:
+    def select_action(
+        self, state: np.ndarray, valid_actions: list[int] | None = None
+    ) -> int:
         """
         Epsilon-greedy action selection with optional invalid-move masking.
 
@@ -118,7 +120,9 @@ class DQNAgent:
             return None
 
         # --- Sample ---
-        states, actions, rewards, next_states, dones = self.buffer.sample(self.batch_size)
+        states, actions, rewards, next_states, dones = self.buffer.sample(
+            self.batch_size
+        )
 
         states_t = torch.FloatTensor(states).to(self.device)
         actions_t = torch.LongTensor(actions).to(self.device)
@@ -161,12 +165,15 @@ class DQNAgent:
     # Save / Load
     # ------------------------------------------------------------------
     def save(self, path: str):
-        torch.save({
-            "q_net": self.q_net.state_dict(),
-            "target_net": self.target_net.state_dict(),
-            "optimizer": self.optimizer.state_dict(),
-            "steps": self.steps,
-        }, path)
+        torch.save(
+            {
+                "q_net": self.q_net.state_dict(),
+                "target_net": self.target_net.state_dict(),
+                "optimizer": self.optimizer.state_dict(),
+                "steps": self.steps,
+            },
+            path,
+        )
         print(f"Saved checkpoint to {path}")
 
     def load(self, path: str):

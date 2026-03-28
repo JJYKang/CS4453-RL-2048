@@ -8,17 +8,17 @@ Usage:
 Integrates with JJYKang's Game2048Env (Gymnasium API).
 """
 
-import numpy as np
-import torch
 from collections import deque
 
-from dqn import DQNAgent, DQN_MLP, DQN_CNN
-from dqn.preprocess import log2_preprocess, one_hot_encode
+import numpy as np
+import torch
+
+from rl2048.dqn import DQN_CNN, DQN_MLP, DQNAgent
+from rl2048.dqn.preprocess import log2_preprocess, one_hot_encode
 
 # ======================================================================
 # Import the real environment
 # ======================================================================
-# Option A: if you've pip-installed your teammate's package
 from rl2048.envs.game_2048_env import Game2048Env
 
 # Option B: if you just copied the file locally, adjust the import path
@@ -69,7 +69,7 @@ def preprocess(obs: np.ndarray) -> np.ndarray:
     one-hot encode (CNN) from the raw board.
     """
     if USE_CNN:
-        raw = np.where(obs > 0, 2 ** obs, 0).astype(np.int64)
+        raw = np.where(obs > 0, 2**obs, 0).astype(np.int64)
         return one_hot_encode(raw)  # shape: (16, 4, 4)
     else:
         return obs.flatten() / 17.0  # 17 ≈ log2(131072)
