@@ -10,7 +10,7 @@ INSTALL_STAMP := $(VENV)/.stamp-install
 DEV_INSTALL_STAMP := $(VENV)/.stamp-install-dev
 LEARN_INSTALL_STAMP := $(VENV)/.stamp-install-learn
 
-.PHONY: help venv install install-dev install-learn install-all test lint smoke train-dqn clean
+.PHONY: help venv install install-dev install-learn install-all test lint smoke train-dqn plot plot-save clean
 
 help:
 	@echo "Targets:"
@@ -23,6 +23,8 @@ help:
 	@echo "  make lint          Run ruff checks"
 	@echo "  make smoke         Run random rollout sanity check"
 	@echo "  make train-dqn     Run DQN training script with configs/dqn.yaml"
+	@echo "  make plot          Show training progress graph"
+	@echo "  make plot-save     Save training graph to training_plot.png"
 	@echo "  make clean         Remove caches/build artifacts"
 
 venv: $(VENV_PYTHON)
@@ -68,6 +70,12 @@ smoke: install
 
 train-dqn: install-learn
 	$(VENV_PYTHON) scripts/train_dqn.py --config configs/dqn.yaml
+
+plot: install-learn
+	$(VENV_PYTHON) scripts/plot_training.py
+
+plot-save: install-learn
+	$(VENV_PYTHON) scripts/plot_training.py --out training_plot.png
 
 clean:
 	rm -rf .pytest_cache .ruff_cache .mypy_cache
