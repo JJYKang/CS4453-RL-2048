@@ -13,8 +13,19 @@ Repository entry points for project workflows, including environment checks and
 future training/evaluation utilities.
 
 - `scripts/random_rollout.py`: quick random-agent rollout against the environment.
+- `scripts/train_dqn.py`: DQN training entrypoint driven by YAML config.
 - Additional project scripts can be added under `scripts/` as training and
   evaluation work progresses.
+
+## Configs
+Configuration files for experiments and training jobs.
+
+- `configs/dqn.yaml`: default DQN training and environment hyperparameters.
+- Run training with:
+
+```bash
+make train-dqn
+```
 
 ## Tests
 Automated validation for environment and board-logic correctness.

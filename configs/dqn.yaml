@@ -1,0 +1,30 @@
+training:
+  use_cnn: false
+  num_episodes: 5000
+  log_every: 100
+  save_every: 1000
+  seed: null
+  max_log2_value: 17.0
+  checkpoint_dir: runs/dqn_checkpoints
+  final_model_name: final_model.pt
+
+env:
+  observation_mode: log2
+  reward_mode: score
+  invalid_move_penalty: -1.0
+
+network:
+  n_actions: 4
+  mlp_input_dim: 16
+  mlp_hidden_size: 256
+  cnn_channels: 16
+
+agent:
+  lr: 0.0005
+  gamma: 0.99
+  buffer_capacity: 100000
+  batch_size: 64
+  target_update_freq: 1000
+  eps_start: 1.0
+  eps_end: 0.01
+  eps_decay_steps: 100000
