@@ -3,8 +3,7 @@
 ## Structure
 
 ```
-├── train.py                 # Entry point — run this
-└── dqn/
+src/rl2048/dqn/
     ├── __init__.py          # Exports: DQNAgent, DQN_MLP, DQN_CNN, ReplayBuffer
     ├── agent.py             # DQN agent (epsilon-greedy, learning, target sync)
     ├── networks.py          # Q-network architectures (MLP + CNN)
@@ -12,22 +11,22 @@
     └── preprocess.py        # Board → tensor (log2 or one-hot)
 ```
 
+Training entrypoint is `scripts/train_dqn.py` and default config is
+`configs/dqn.yaml`.
+
 ## Setup
 
 ```bash
+# 1. Install package + learning dependencies
+make install-learn
 
-path/to/CS4453-RL-2048
-
-# 2. Install dependencies
-pip install torch numpy gymnasium
-
-# 3. Train
-python train.py
+# 2. Train
+make train-dqn
 ```
 
 ## Switching to CNN
 
-In `train.py`, set `USE_CNN = True`.
+In `configs/dqn.yaml`, set `training.use_cnn: true`.
 
 ## Key Hyperparameters
 
