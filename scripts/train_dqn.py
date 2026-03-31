@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+import csv
 import sys
 from collections import deque
 from pathlib import Path
@@ -64,7 +65,7 @@ def preprocess(
 
 
 def train(config: dict[str, Any]) -> None:
-    from rl2048.dqn import DQNAgent, DQN_CNN, DQN_MLP
+    from rl2048.dqn import DQN_CNN, DQN_MLP, DQNAgent
     from rl2048.dqn.preprocess import one_hot_encode
     from rl2048.envs import Game2048Env
 
@@ -84,6 +85,10 @@ def train(config: dict[str, Any]) -> None:
         training_cfg.get("checkpoint_dir", "runs/dqn_checkpoints")
     )
     checkpoint_dir.mkdir(parents=True, exist_ok=True)
+    log_path = checkpoint_dir / "episode_log.csv"
+    log_file = open(log_path, "w", newline="")
+    csv_writer = csv.writer(log_file)
+    csv_writer.writerow(["episode", "reward", "max_tile", "steps", "loss", "epsilon"])
     final_model_name = str(training_cfg.get("final_model_name", "final_model.pt"))
 
     env = Game2048Env(
@@ -164,7 +169,18 @@ def train(config: dict[str, Any]) -> None:
 
         reward_window.append(episode_reward)
         max_tile_window.append(info["max_tile"])
-
+        csv_writer.writerow(
+            [
+                episode,
+                f"{episode_reward:.1f}",
+                info["max_tile"],
+                info["steps"],
+                f"{float(np.mean(loss_window)) if loss_window else 0:.4f}",
+                f"{agent.epsilon:.4f}",
+            ]
+        )
+        if episode % log_every == 0:
+            log_file.flush()
         if episode % log_every == 0:
             avg_reward = float(np.mean(reward_window))
             avg_loss = float(np.mean(loss_window)) if loss_window else 0.0
@@ -184,6 +200,7 @@ def train(config: dict[str, Any]) -> None:
 
     final_model_path = checkpoint_dir / final_model_name
     agent.save(str(final_model_path))
+    log_file.close()
     env.close()
     print("\nTraining complete!")
 
