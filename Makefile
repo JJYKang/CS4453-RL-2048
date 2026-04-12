@@ -10,7 +10,7 @@ INSTALL_STAMP := $(VENV)/.stamp-install
 DEV_INSTALL_STAMP := $(VENV)/.stamp-install-dev
 LEARN_INSTALL_STAMP := $(VENV)/.stamp-install-learn
 
-.PHONY: help venv install install-dev install-learn install-all test lint smoke train-dqn plot plot-save clean
+.PHONY: help venv install install-dev install-learn install-all test lint smoke train-dqn train-ppo plot plot-save clean
 
 help:
 	@echo "Targets:"
@@ -26,6 +26,7 @@ help:
 	@echo "  make plot          Show training progress graph"
 	@echo "  make plot-save     Save training graph to training_plot.png"
 	@echo "  make clean         Remove caches/build artifacts"
+	@echo "  make train-ppo     Run PPO training script"
 
 venv: $(VENV_PYTHON)
 
@@ -70,6 +71,9 @@ smoke: install
 
 train-dqn: install-learn
 	$(VENV_PYTHON) scripts/train_dqn.py --config configs/dqn.yaml
+
+train-ppo: install-learn
+	$(VENV_PYTHON) scripts/train_ppo.py
 
 plot: install-learn
 	$(VENV_PYTHON) scripts/plot_training.py
