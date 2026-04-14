@@ -1,0 +1,37 @@
+training:
+  use_cnn: true                          # Always CNN for this config
+  num_episodes: 2000
+  log_every: 100
+  save_every: 1000
+  seed: null
+  max_log2_value: 17.0                   # Used only if switched to MLP preprocessing
+  checkpoint_dir: runs/dqn_cnn_corner
+  final_model_name: final_model.pt
+
+env:
+  observation_mode: log2                 # CNN branch converts log2→raw→one-hot internally
+  invalid_move_penalty: -5.0             # Heavier penalty pairs well with corner reward
+
+network:
+  n_actions: 4
+  cnn_channels: 16                       # Number of one-hot channels (tile types 0..15)
+  conv_hidden: 128                       # Hidden channels per ConvBlock
+  fc_hidden: 256                         # Fully-connected hidden size
+
+agent:
+  lr: 0.0003
+  gamma: 0.99
+  buffer_capacity: 100000
+  batch_size: 64
+  target_update_freq: 1000
+  eps_start: 1.0
+  eps_end: 0.01
+  eps_decay_steps: 200000
+
+reward:
+  corner: top_left                       # Anchor corner: top_left | top_right | bottom_left | bottom_right
+  merge_log_scale: 1.0                   # Weight for log2(1 + merge_gain)
+  empty_delta_scale: 0.4                 # Weight for change in number of empty tiles
+  corner_bonus_scale: 1.5               # Bonus when max tile stays in corner
+  leave_corner_penalty: 5.0             # Penalty when max tile leaves corner
+  top_row_monotonicity_delta_scale: 0.5 # Weight for monotonicity improvement

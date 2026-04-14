@@ -142,6 +142,7 @@ class Game2048Env(gym.Env):
         self._seed_used = False
 
         self.board: Board = np.zeros((self.size, self.size), dtype=np.int32)
+        self.prev_board: Board = np.zeros((self.size, self.size), dtype=np.int32)
         self.score = 0
         self.steps = 0
 
@@ -181,6 +182,7 @@ class Game2048Env(gym.Env):
             rng=self.np_random,
             probability_2=self.spawn_probability_2,
         )
+        self.prev_board = self.board.copy()
         self.score = 0
         self.steps = 0
 
@@ -215,6 +217,7 @@ class Game2048Env(gym.Env):
             raise ValueError(f"Invalid action {action}.")
 
         self.steps += 1
+        self.prev_board = self.board.copy()
 
         moved_board, gained, changed = move(self.board, int(action))
         invalid_move = not changed
